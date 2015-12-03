@@ -167,17 +167,17 @@ REQUIREDBAUTHDB="yes"
 #
 # Daily backups are executed if DODAILY is set to "yes". 
 # The number of daily backup copies to keep for each day (i.e. 'Monday', 'Tuesday', etc.) is set with DAILYRETENTION. 
-# DAILYRETENTION=0 rotates daily backups every week (i.e. only the most recent daily copy is kept). -1 disables rotation.
+# DAILYRETENTION=1 rotates daily backups every week (i.e. only the most recent daily copy is kept). 0 disables rotation.
 #
 # Weekly backups are executed if DOWEEKLY is set to "yes".
 # WEEKLYDAY [1-7] sets which day a weekly backup occurs when cron.daily scripts are run.
 # Rotate weekly copies after the number of weeks set by WEEKLYRETENTION.
-# WEEKLYRETENTION=0 rotates weekly backups every week. -1 disables rotation.
+# WEEKLYRETENTION=1 rotates weekly backups every week. 0 disables rotation.
 #
 # Monthly backups are executed if DOMONTHLY is set to "yes".
 # Monthy backups occur on the first day of each month when cron.daily scripts are run.
 # Rotate monthly backups after the number of months set by MONTHLYRETENTION.
-# MONTHLYRETENTION=0 rotates monthly backups upon each execution. -1 disables rotation.
+# MONTHLYRETENTION=1 rotates monthly backups upon each execution. 0 disables rotation.
 #
 #=====================================================================
 # Please Note!!
@@ -476,6 +476,8 @@ if [[ $DOM = "01" ]] && [[ $DOMONTHLY = "yes" ]]; then
             echo Deleting "$NUM_OLD_FILES" global setting backup file\(s\) older than "$MONTHLYRETENTION" month\(s\) old.
 	    find $BACKUPDIR/monthly -not -newermt "$MONTHLYRETENTION month ago" -type f -delete
         fi
+    else
+        find $BACKUPDIR/monthly -not -type f -delete
     fi
     FILE="$BACKUPDIR/monthly/$DATE.$M"
 
@@ -490,6 +492,8 @@ elif [[ $DNOW = $WEEKLYDAY ]] && [[ $DOWEEKLY = "yes" ]] ; then
             echo Deleting $NUM_OLD_FILES global setting backup file\(s\) older than "$WEEKLYRETENTION" week\(s\) old.
             find $BACKUPDIR/weekly -not -newermt "$WEEKLYRETENTION week ago" -type f -delete
         fi
+    else
+        find $BACKUPDIR/weekly -type f -delete
     fi
     FILE="$BACKUPDIR/weekly/week.$W.$DATE"
 
@@ -504,6 +508,8 @@ elif [[ $DODAILY = "yes" ]] ; then
             echo Deleting $NUM_OLD_FILES global setting backup file\(s\) made in previous weeks.
             find $BACKUPDIR/daily -name "*.$DOW.*" -not -newermt "$DAILYRETENTION week ago" -type f -delete		
         fi
+    else
+        find $BACKUPDIR/daily -name "*.$DOW.*" -type f -delete		
     fi
     FILE="$BACKUPDIR/daily/$DATE.$DOW"
 
