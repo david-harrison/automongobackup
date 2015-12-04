@@ -470,14 +470,14 @@ if [[ $DOM = "01" ]] && [[ $DOMONTHLY = "yes" ]]; then
     echo Monthly Full Backup
     echo
     # Delete old monthly backups while respecting the set rentention policy.
-    if [[ $MONTHLYRETENTION -ge 0 ]] ; then
+    if [[ $MONTHLYRETENTION -gt 0 ]] ; then
         NUM_OLD_FILES=`find $BACKUPDIR/monthly -depth -not -newermt "$MONTHLYRETENTION month ago" -type f | wc -l`
         if [[ $NUM_OLD_FILES -gt 0 ]] ; then
             echo Deleting "$NUM_OLD_FILES" global setting backup file\(s\) older than "$MONTHLYRETENTION" month\(s\) old.
 	    find $BACKUPDIR/monthly -not -newermt "$MONTHLYRETENTION month ago" -type f -delete
         fi
     else
-        find $BACKUPDIR/monthly -not -type f -delete
+        find $BACKUPDIR/monthly -type f -delete
     fi
     FILE="$BACKUPDIR/monthly/$DATE.$M"
 
@@ -485,7 +485,7 @@ if [[ $DOM = "01" ]] && [[ $DOMONTHLY = "yes" ]]; then
 elif [[ $DNOW = $WEEKLYDAY ]] && [[ $DOWEEKLY = "yes" ]] ; then
     echo Weekly Backup
     echo
-    if [[ $WEEKLYRETENTION -ge 0 ]] ; then
+    if [[ $WEEKLYRETENTION -gt 0 ]] ; then
         # Delete old weekly backups while respecting the set rentention policy.
         NUM_OLD_FILES=`find $BACKUPDIR/weekly -depth -not -newermt "$WEEKLYRETENTION week ago" -type f | wc -l`
         if [[ $NUM_OLD_FILES -gt 0 ]] ; then
@@ -502,14 +502,14 @@ elif [[ $DODAILY = "yes" ]] ; then
     echo Daily Backup of Databases
     echo
     # Delete old daily backups while respecting the set rentention policy.
-    if [[ $DAILYRETENTION -ge 0 ]] ; then
+    if [[ $DAILYRETENTION -gt 0 ]] ; then
         NUM_OLD_FILES=`find $BACKUPDIR/daily -depth -name "*.$DOW.*" -not -newermt "$DAILYRETENTION week ago" -type f | wc -l`
-        if [[ $NUM_OLD_FILES > 0 ]] ; then
+        if [[ $NUM_OLD_FILES -gt 0 ]] ; then
             echo Deleting $NUM_OLD_FILES global setting backup file\(s\) made in previous weeks.
             find $BACKUPDIR/daily -name "*.$DOW.*" -not -newermt "$DAILYRETENTION week ago" -type f -delete		
         fi
     else
-        find $BACKUPDIR/daily -name "*.$DOW.*" -type f -delete		
+        find $BACKUPDIR/daily -type f -delete		
     fi
     FILE="$BACKUPDIR/daily/$DATE.$DOW"
 
